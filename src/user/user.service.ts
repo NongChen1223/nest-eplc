@@ -3,23 +3,34 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
+import { use } from 'passport';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly user: Repository<User>,
+    @InjectRepository(UserEntity) private readonly user: Repository<UserEntity>,
   ) {}
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  /* 创建用户 */
+  createUser(createUserDto: CreateUserDto) {
+    const data = new UserEntity();
+    data.name = createUserDto.name;
+    data.phone = createUserDto.phone;
+    data.eamil = createUserDto.eamil;
+    return this.user.save(data);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  /* 查找用户 */
+  findAll(query: { KeyWord: string }) {
+    return this.user.find({
+      where: {
+        name: Like(`%${query.KeyWord}`),
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  // findOne(id: number): Promise<UserEntity>{
+  //   return user
+  // }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
