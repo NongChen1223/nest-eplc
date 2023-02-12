@@ -8,10 +8,12 @@ import { use } from 'passport';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity) private readonly user: Repository<UserEntity>,
+    @InjectRepository(UserEntity)
+    private readonly user: Repository<UserEntity>,
   ) {}
   /* 创建用户 */
   createUser(createUserDto: CreateUserDto) {
+    console.log('创建用户', CreateUserDto);
     const data = new UserEntity();
     data.name = createUserDto.name;
     data.phone = createUserDto.phone;

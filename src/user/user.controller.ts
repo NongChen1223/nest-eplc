@@ -14,6 +14,16 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as svgCaptchs from 'svg-captcha';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiBody,
+  ApiConsumes,
+  ApiQuery,
+  ApiExtraModels,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -31,7 +41,9 @@ export class UserController {
   //   res.send(captcha.data);
   // }
   @Post('create')
-  createrUser(@Body() Body, CreateUserDto: CreateUserDto) {
-    return this.userService.createUser(CreateUserDto);
+  createrUser(@Body() createUserDto: CreateUserDto) {
+    // console.log('Body', Body);
+    console.log('createUserDto', createUserDto);
+    return this.userService.createUser(createUserDto);
   }
 }
