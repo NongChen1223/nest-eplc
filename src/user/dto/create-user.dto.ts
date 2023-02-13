@@ -36,7 +36,7 @@ export class CreateUserDto {
   readonly eamil: string;
 
   @ApiProperty({ description: '头像', required: false })
-  @IsString({ message: 'avatar 类型错误，正确类型 string' })
+  // @IsString({ message: 'avatar 类型错误，正确类型 string' })
   @IsOptional()
   readonly avatar?: string;
 }

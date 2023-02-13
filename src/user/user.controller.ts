@@ -9,6 +9,7 @@ import {
   Req,
   Res,
   Session,
+  Header,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';

@@ -4,6 +4,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
+
+import { ResultData } from '../common/utils/result';
 import { use } from 'passport';
 @Injectable()
 export class UserService {
@@ -12,13 +14,18 @@ export class UserService {
     private readonly user: Repository<UserEntity>,
   ) {}
   /* 创建用户 */
-  createUser(createUserDto: CreateUserDto) {
+  async createUser(createUserDto: CreateUserDto): Promise<ResultData> {
     console.log('创建用户', CreateUserDto);
-    const data = new UserEntity();
-    data.name = createUserDto.name;
-    data.phone = createUserDto.phone;
-    data.eamil = createUserDto.eamil;
-    return this.user.save(data);
+    try {
+      const data = new UserEntity();
+      data.name = createUserDto.name;
+      data.phone = createUserDto.phone;
+      data.password = createUserDto.password;
+      data.avatar = createUserDto.avatar;
+      return this.user.save(data);
+    } catch (err) {
+      return err;
+    }
   }
 
   /* 查找用户 */
