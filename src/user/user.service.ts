@@ -4,7 +4,12 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
-
+import {
+  validateOrReject,
+  ValidationError,
+  ValidatorOptions,
+} from 'class-validator';
+import { AppHttpCode } from '../common/enums/code.enum';
 import { ResultData } from '../common/utils/result';
 import { use } from 'passport';
 @Injectable()
@@ -15,17 +20,26 @@ export class UserService {
   ) {}
   /* 创建用户 */
   async createUser(createUserDto: CreateUserDto): Promise<ResultData> {
-    console.log('创建用户', CreateUserDto);
+    const { name, password, phone, email } = createUserDto;
+    const options: ValidatorOptions = { validationError: { target: false } };
+    console.log('校验 ValidatorOptions', options);
     try {
-      const data = new UserEntity();
-      data.name = createUserDto.name;
-      data.phone = createUserDto.phone;
-      data.password = createUserDto.password;
-      data.avatar = createUserDto.avatar;
-      return this.user.save(data);
-    } catch (err) {
-      return err;
+      await validateOrReject(createUserDto, options);
+    } catch (errors) {
+      console.log('校验抛出', errors);
+      const validationErrors: ValidationError[] = Array.isArray(errors)
+        ? errors
+        : [errors];
+      const missingFields = validationErrors
+        .map((error) => error.property)
+        .join(', ');
+      return ResultData.fail(
+        AppHttpCode.PARAM_INVALID,
+        `缺少必要的参数：${missingFields}`,
+      );
+      // throw new Error(`缺少必要的参数：${missingFields}`);
     }
+    return ResultData.ok(createUserDto, '创建用户成功');
   }
 
   /* 查找用户 */
