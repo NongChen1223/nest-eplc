@@ -20,26 +20,19 @@ export class UserService {
   ) {}
   /* 创建用户 */
   async createUser(createUserDto: CreateUserDto): Promise<ResultData> {
-    const { name, password, phone, email } = createUserDto;
-    const options: ValidatorOptions = { validationError: { target: false } };
-    console.log('校验 ValidatorOptions', options);
     try {
-      await validateOrReject(createUserDto, options);
+      //校验字段
+      await validateOrReject(createUserDto);
+      return ResultData.ok(createUserDto, '创建用户成功');
     } catch (errors) {
-      console.log('校验抛出', errors);
-      const validationErrors: ValidationError[] = Array.isArray(errors)
-        ? errors
-        : [errors];
-      const missingFields = validationErrors
-        .map((error) => error.property)
-        .join(', ');
+      console.log('创建用户失败 抛出异常', errors);
+      const missingFields = errors.map((e) => e.property).join(',');
+      console.log('missingFields字符串', missingFields);
       return ResultData.fail(
         AppHttpCode.PARAM_INVALID,
-        `缺少必要的参数：${missingFields}`,
+        `缺失必要参数：${missingFields}`,
       );
-      // throw new Error(`缺少必要的参数：${missingFields}`);
     }
-    return ResultData.ok(createUserDto, '创建用户成功');
   }
 
   /* 查找用户 */
