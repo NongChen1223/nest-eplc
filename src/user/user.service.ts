@@ -22,6 +22,7 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto): Promise<ResultData> {
     try {
       //校验字段
+      console.log('校验字段', createUserDto);
       await validateOrReject(createUserDto);
       return ResultData.ok(createUserDto, '创建用户成功');
     } catch (errors) {
