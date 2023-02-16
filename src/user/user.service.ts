@@ -26,7 +26,7 @@ export class UserService {
       await validateOrReject(createUserDto);
       return ResultData.ok(createUserDto, '创建用户成功');
     } catch (errors) {
-      console.log('创建用户失败 抛出异常', errors);
+      console.log('创建用户失败 抛出异常111', errors);
       const missingFields = errors.map((e) => e.property).join(',');
       console.log('missingFields字符串', missingFields);
       return ResultData.fail(
