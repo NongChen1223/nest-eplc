@@ -1,30 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Req,
-  Res,
-  Session,
-  Header,
-} from '@nestjs/common';
-import { UserService } from './user.service';
+import { Body, Controller, Post } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import * as svgCaptchs from 'svg-captcha';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiOkResponse,
-  ApiBody,
-  ApiConsumes,
-  ApiQuery,
-  ApiExtraModels,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -43,9 +19,7 @@ export class UserController {
   // }
   @Post('create')
   createrUser(@Body() createUserDto: CreateUserDto) {
-    // console.log('Body', Body);
-    console.log('createUserDto', createUserDto);
-
+    console.log('aa');
     return this.userService.createUser(createUserDto);
   }
 }

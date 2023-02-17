@@ -21,21 +21,16 @@ export class UserService {
   /* 创建用户 */
   async createUser(createUserDto: CreateUserDto): Promise<ResultData> {
     try {
-      //校验字段
-      console.log('校验字段', createUserDto);
       await validateOrReject(createUserDto);
       return ResultData.ok(createUserDto, '创建用户成功');
     } catch (errors) {
-      console.log('创建用户失败 抛出异常111', errors);
       const missingFields = errors.map((e) => e.property).join(',');
-      console.log('missingFields字符串', missingFields);
       return ResultData.fail(
         AppHttpCode.PARAM_INVALID,
         `缺失必要参数：${missingFields}`,
       );
     }
   }
-
   /* 查找用户 */
   findAll(query: { KeyWord: string }) {
     return this.user.find({
