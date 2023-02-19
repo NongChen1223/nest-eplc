@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 @Controller('user')
@@ -19,7 +20,6 @@ export class UserController {
   // }
   @Post('create')
   createrUser(@Body() createUserDto: CreateUserDto) {
-    console.log('aa');
     return this.userService.createUser(createUserDto);
   }
 }

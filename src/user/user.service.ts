@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository, Like } from 'typeorm';
@@ -22,13 +22,14 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto): Promise<ResultData> {
     try {
       await validateOrReject(createUserDto);
+      const user = new UserEntity();
+      Object.assign(user, createUserDto);
+      await user.save();
+      // console.log(createUserDto);
       return ResultData.ok(createUserDto, '创建用户成功');
     } catch (errors) {
-      const missingFields = errors.map((e) => e.property).join(',');
-      return ResultData.fail(
-        AppHttpCode.PARAM_INVALID,
-        `缺失必要参数：${missingFields}`,
-      );
+      console.log('创建用户失败', errors);
+      return ResultData.fail(AppHttpCode.PARAM_INVALID, `用户创建失败`);
     }
   }
   /* 查找用户 */
