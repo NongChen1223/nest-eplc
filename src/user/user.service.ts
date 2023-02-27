@@ -1,7 +1,7 @@
 import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, EntityManager } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import {
@@ -16,16 +16,22 @@ import { use } from 'passport';
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
-    private readonly user: Repository<UserEntity>,
+    private userRepository: Repository<UserEntity>,
   ) {}
   /* 创建用户 */
   async createUser(createUserDto: CreateUserDto): Promise<ResultData> {
     try {
       await validateOrReject(createUserDto);
       const user = new UserEntity();
+      const existPhone = await this.userRepository.findOne({
+        where: { phone: user.phone },
+      });
+      if (existPhone) {
+        return ResultData.fail(AppHttpCode.PARAM_INVALID, `该手机号码已注册`);
+      }
       Object.assign(user, createUserDto);
-      await user.save();
-      // console.log(createUserDto);
+      console.log('user', user);
+      this.userRepository.save(user);
       return ResultData.ok(createUserDto, '创建用户成功');
     } catch (errors) {
       console.log('创建用户失败', errors);
@@ -34,7 +40,7 @@ export class UserService {
   }
   /* 查找用户 */
   findAll(query: { KeyWord: string }) {
-    return this.user.find({
+    return this.userRepository.find({
       where: {
         name: Like(`%${query.KeyWord}`),
       },

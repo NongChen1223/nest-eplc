@@ -45,7 +45,7 @@ export class UserEntity {
   eamil: string;
 
   @ApiProperty({ type: String, description: '头像url' })
-  @Column({ type: 'varchar', comment: '头像地址' })
+  @Column({ type: 'varchar', comment: '头像地址', default: '' })
   avatar: string;
 
   @ApiProperty({ type: Date, description: '创建时间' })
